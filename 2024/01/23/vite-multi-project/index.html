@@ -1,0 +1,843 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Shber">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="项目背景：有多个UI及布局都相同的项目，但是拆成多个项目开发太乱后期不好维护。所以想把多个项目整个到一个项目中，抽离公共的组件，方法等。 基于技术栈：vue3 + vite5 + element-plus+ esint + prettier + stylelint + husky + lint-stage + commitlint 1. 项目目标 🍀 支持打包指定子页面，打包后的文件夹：各页面相">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue3+vite5 构建多页面多项目开发及打包">
+<meta property="og:url" content="http://example.com/2024/01/23/vite-multi-project/index.html">
+<meta property="og:site_name" content="Shber的博客">
+<meta property="og:description" content="项目背景：有多个UI及布局都相同的项目，但是拆成多个项目开发太乱后期不好维护。所以想把多个项目整个到一个项目中，抽离公共的组件，方法等。 基于技术栈：vue3 + vite5 + element-plus+ esint + prettier + stylelint + husky + lint-stage + commitlint 1. 项目目标 🍀 支持打包指定子页面，打包后的文件夹：各页面相">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/01/23/vite-multi-project/code1.jpg">
+<meta property="og:image" content="http://example.com/2024/01/23/vite-multi-project/code2.jpg">
+<meta property="og:image" content="http://example.com/2024/01/23/vite-multi-project/code2.jpg">
+<meta property="article:published_time" content="2024-01-23T02:58:50.000Z">
+<meta property="article:modified_time" content="2024-01-23T06:15:44.162Z">
+<meta property="article:author" content="Shber">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2024/01/23/vite-multi-project/code1.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>vue3+vite5 构建多页面多项目开发及打包 - Shber的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"QRfU5pSE2oF5IN1VUwEKCk9E-gzGzoHsz","app_key":"diqFnvO5N33sOiVsrFwKBKyX","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>青春正好</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="vue3+vite5 构建多页面多项目开发及打包"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-01-23 10:58" pubdate>
+          2024年1月23日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          40 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">vue3+vite5 构建多页面多项目开发及打包</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>项目背景：有多个UI及布局都相同的项目，但是拆成多个项目开发太乱后期不好维护。所以想把多个项目整个到一个项目中，抽离公共的组件，方法等。</p>
+<p>基于技术栈：<font bgcolor='green' size=3 face="黑体">vue3 + vite5 + element-plus+ esint + prettier + stylelint + husky + lint-stage + commitlint</font></p>
+<h4 id="1-项目目标"><a href="#1-项目目标" class="headerlink" title="1. 项目目标"></a>1. 项目目标</h4><ul>
+<li>🍀 支持打包指定子页面，打包后的文件夹：各页面相互独立（各子页面解耦，避免相互影响）</li>
+<li>🍀 支持启动指定子页面（常规的多页面项目，启动后需要手动拼接页面地址，或者在根目录做一个重定向的页面，总之调试非常不便）</li>
+<li>🍀 支持指令化新建页面（手动创建页面太麻烦，每次都得复制一份干净的文件夹）</li>
+<li>🍀 自由选择创建<font bgcolor='green'>ts</font>页面 &#x2F; <font bgcolor='green'>js</font>页面（对于一些重要的页面可以使用ts提高规范性，一些简单的页面则使用js提高开发效率）</li>
+</ul>
+<h4 id="2-本文将从以下几个方面逐步讲解："><a href="#2-本文将从以下几个方面逐步讲解：" class="headerlink" title="2. 本文将从以下几个方面逐步讲解："></a>2. 本文将从以下几个方面逐步讲解：</h4><ul>
+<li>项目目录结构</li>
+<li>新建项目</li>
+<li>安装依赖及一些基础插件</li>
+<li>vite配置项修改</li>
+<li>ts配置</li>
+<li>多页面入口配置</li>
+<li>多页面打包配置</li>
+<li>指令化新建子页面（*重点）</li>
+<li>多页面架构改造（*重点）</li>
+<li>完善项目架构</li>
+</ul>
+<h2 id="教程"><a href="#教程" class="headerlink" title="教程"></a>教程</h2><h3 id="一、-项目目录结构"><a href="#一、-项目目录结构" class="headerlink" title="一、 项目目录结构"></a>一、 项目目录结构</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs bash">├── README.md <br>├── .husky   //git hook钩子<br>│   ├── commit-msg //规范 commit message 信息<br>│   └── verify-commit-msg.mjs  //脚本：commitlint 替代方案<br>├── dist //打包输出目录<br>├── scripts //存放一些脚本<br>│   ├── template         //创建子页面的js模版<br>│   ├── template-ts      //创建子页面的ts模版<br>│   ├── index.mjs        //创建子页面的脚本<br>│   └── multiPages.json  //子页面描述说明集合文件<br>├── src <br>│   ├── arrets       //公共静态资源<br>│   ├── components   //公共组件<br>│   ├── store        //pinia 共享状态存储库<br>│   ├── utils        //公共方法<br>│   └── Projects     //多页面文件夹<br>├── types  //ts 声明文件<br>├── .env.development   //开发环境-环境变量<br>├── .env.production    //生产环境-环境变量<br>├── .eslintrc.cjs      //eslint 配置<br>├── .gitignore         //git 提交忽略文件<br>├── .prettierignore    //prettier 忽略文件<br>├── .prettierrc.js     //prettier 配置<br>├── .stylelintignore   //stylelint 忽略文件<br>├── .stylelintrc.js    //stylelint 配置<br>├── .pnpm-lock.yaml    //锁定项目于一份各个依赖稳定的版本信息<br>├── .stats.html        //chunck size 分析页面<br>├── tsconfig.json      //ts 配置<br>├── tsconfig.node.json //vite在node环境中的 ts 规则<br>├── vite.config.ts     //vite 配置<br>├── package.json<br></code></pre></td></tr></table></figure>
+
+<h3 id="二、-新建项目"><a href="#二、-新建项目" class="headerlink" title="二、 新建项目"></a>二、 新建项目</h3><p>首先我们用命令行新建一个vite项目，不要使用模板创建，就创建一个基础模板就行，创建命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># npm 6.x</span><br>npm create vite\@latest vite-multi<br><br><span class="hljs-comment"># npm 7+, extra double-dash is needed:</span><br>npm create vite\@latest  vite-multi<br><br><span class="hljs-comment"># yarn</span><br>yarn create vite  vite-multi<br><br><span class="hljs-comment"># pnpm</span><br>pnpm create vite  vite-multi<br></code></pre></td></tr></table></figure>
+
+<h3 id="三、-安装依赖及一些基础插件"><a href="#三、-安装依赖及一些基础插件" class="headerlink" title="三、 安装依赖及一些基础插件"></a>三、 安装依赖及一些基础插件</h3><p>新建项目后记得<font bgcolor='green'> npm i </font>安装依赖。然后我们先装一些基础的插件，例如vue-router等，方便后面调试，<font bgcolor='pink'> 这里可能没装全，大家根据报错提示自行安装即可 </font>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">//安装vue-router4<br>npm install vue-router\@next -S<br><br>//安装 sass<br>npm install sass -D<br><br>//安装 chalk（chalk是一个颜色的插件。可以通过chalk.blue(‘hello world’)来改变console打印的颜色）<br>npm install chalk@^4.1.2<br><br>//处理使用 node 模块代码飘红，例如 ‘找不到模块 “path“ 或其相对应的类型声明’<br>npm install @types/node --save-dev<br></code></pre></td></tr></table></figure>
+
+<h3 id="四、-vite配置项修改"><a href="#四、-vite配置项修改" class="headerlink" title="四、 vite配置项修改"></a>四、 vite配置项修改</h3><p>对<font bgcolor='green'> vite.config.ts </font>进行调整，先做一些基础的配置，后面我们调通项目之后再丰富项目插件。</p>
+<p>🍀 配置文件路径的别名，方便书写文件引入路径。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">resolve: &#123;<br>    <span class="hljs-built_in">alias</span>: &#123;<br>      <span class="hljs-string">&#x27;@&#x27;</span>: path.join(__dirname, <span class="hljs-string">&#x27;./src&#x27;</span>),<br>      <span class="hljs-string">&#x27;@Project&#x27;</span>: path.join(__dirname, <span class="hljs-string">&#x27;./src/Project&#x27;</span>)<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="五、-ts配置"><a href="#五、-ts配置" class="headerlink" title="五、 ts配置"></a>五、 ts配置</h3><p>项目根目录下找到 tsconfig.json 文件，它是是用来配置 TS 编译选项的。<br>以下是我使用的配置项，基本对每一项都做了解释。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs bash">&#123;<br><span class="hljs-string">&quot;compilerOptions&quot;</span>: &#123;<br><span class="hljs-string">&quot;target&quot;</span>: <span class="hljs-string">&quot;esnext&quot;</span>, //用于指定 TS 最后编译出来的 ES 版本<br><span class="hljs-string">&quot;types&quot;</span>: [<span class="hljs-string">&quot;vite/client&quot;</span>],  //要包含的类型声明文件名列表<br><span class="hljs-string">&quot;useDefineForClassFields&quot;</span>: <span class="hljs-literal">true</span>,  //将 class 声明中的字段语义从 [[Set]] 变更到 [[Define]]<br><span class="hljs-string">&quot;module&quot;</span>: <span class="hljs-string">&quot;esnext&quot;</span>,  // 设置编译后代码使用的模块化系统：commonjs | UMD | AMD | ES2020 | ESNext | System<br><span class="hljs-string">&quot;moduleResolution&quot;</span>: <span class="hljs-string">&quot;node&quot;</span>, // 模块解析策略，ts默认用node的解析策略，即相对的方式导入<br><span class="hljs-string">&quot;strict&quot;</span>: <span class="hljs-literal">true</span>,  //开启所有的严格检查<br><span class="hljs-string">&quot;jsx&quot;</span>: <span class="hljs-string">&quot;preserve&quot;</span>, //在 `.tsx`文件里支持JSX： `<span class="hljs-string">&quot;React&quot;</span>`或 `<span class="hljs-string">&quot;Preserve&quot;</span>`<br><span class="hljs-string">&quot;sourceMap&quot;</span>: <span class="hljs-literal">false</span>, // 生成目标文件的sourceMap文件<br><span class="hljs-string">&quot;resolveJsonModule&quot;</span>: <span class="hljs-literal">true</span>, //允许导入扩展名为“.json”的模块<br><span class="hljs-string">&quot;isolatedModules&quot;</span>: <span class="hljs-literal">true</span>,  //确保每个文件都可以在不依赖其他导入的情况下安全地进行传输<br><span class="hljs-string">&quot;esModuleInterop&quot;</span>: <span class="hljs-literal">true</span>,  //支持导入 CommonJs 模块<br><span class="hljs-string">&quot;lib&quot;</span>: [<span class="hljs-string">&quot;esnext&quot;</span>, <span class="hljs-string">&quot;dom&quot;</span>, <span class="hljs-string">&quot;ES2015&quot;</span>], //TS需要引用的库，即声明文件，es5 默认引用dom、es5、scripthost,如需要使用es的高级版本特性，通常都需要配置，如es8的数组新特性需要引入<span class="hljs-string">&quot;ES2019.Array&quot;</span>,<br>// <span class="hljs-string">&quot;noLib&quot;</span>: <span class="hljs-literal">false</span>, //不包含默认的库文件（ lib.d.ts）<br><span class="hljs-string">&quot;skipLibCheck&quot;</span>: <span class="hljs-literal">true</span>, //忽略所有的声明文件（ *.d.ts）的类型检查<br><span class="hljs-string">&quot;allowJs&quot;</span>: <span class="hljs-literal">true</span>, // 允许编译器编译JS，JSX文件<br><span class="hljs-string">&quot;noEmit&quot;</span>: <span class="hljs-literal">true</span>, // 不输出文件,即编译后不会生成任何js文件<br><span class="hljs-string">&quot;allowSyntheticDefaultImports&quot;</span>: <span class="hljs-literal">true</span>, //允许从没有设置默认导出的模块中默认导入。这并不影响代码的输出，仅为了类型检查。默认值：module === <span class="hljs-string">&quot;system&quot;</span> 或设置了 --esModuleInterop 且 module 不为 es2015 / esnext<br><span class="hljs-string">&quot;baseUrl&quot;</span>: <span class="hljs-string">&quot;./&quot;</span>,   解析非相对模块的基地址，默认是当前目录<br><span class="hljs-string">&quot;paths&quot;</span>: &#123;  <br>  <span class="hljs-string">&quot;@/*&quot;</span>: [<span class="hljs-string">&quot;src/*&quot;</span>], //解决引入报错  找不到模块“@/xxxx” 或其相应的类型声明<br>  <span class="hljs-string">&quot;@Project&quot;</span>: [<span class="hljs-string">&quot;src/Project/*&quot;</span>]<br>&#125;<br>&#125;,<br><span class="hljs-string">&quot;include&quot;</span>: [<br><span class="hljs-string">&quot;scripts/**/*.ts&quot;</span>,<br><span class="hljs-string">&quot;src/**/*.ts&quot;</span>,<br><span class="hljs-string">&quot;src/**/*.js&quot;</span>,<br><span class="hljs-string">&quot;src/**/*.d.ts&quot;</span>,<br><span class="hljs-string">&quot;src/**/*.tsx&quot;</span>,<br><span class="hljs-string">&quot;src/**/*.vue&quot;</span>,<br><span class="hljs-string">&quot;scripts/index.mts&quot;</span>,<br><span class="hljs-string">&quot;scripts/template-ts/router/routes.ts&quot;</span>,<br><span class="hljs-string">&quot;scripts/template-ts/router/index.ts&quot;</span>,<br><span class="hljs-string">&quot;scripts/template-ts/main.ts&quot;</span>,<br><span class="hljs-string">&quot;src/env.d.ts&quot;</span>,<br><span class="hljs-string">&quot;src/global.d.ts&quot;</span><br>],<br><span class="hljs-string">&quot;exclude&quot;</span>: [<span class="hljs-string">&quot;vite.config.ts&quot;</span>],<br><span class="hljs-string">&quot;references&quot;</span>: [&#123; <span class="hljs-string">&quot;path&quot;</span>: <span class="hljs-string">&quot;./tsconfig.node.json&quot;</span> &#125;] //每个引用的`path`属性都可以指向到包含`tsconfig.json`文件的目录，或者直接指向到配置文件本身（名字是任意的）<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="六、-多页面入口配置"><a href="#六、-多页面入口配置" class="headerlink" title="六、 多页面入口配置"></a>六、 多页面入口配置</h3><p><font bgcolor='green'> <a target="_blank" rel="noopener" href="https://cn.vitejs.dev/config/">vite</a> </font>使用的是 <a target="_blank" rel="noopener" href="https://cn.rollupjs.org/introduction/">rollup</a> 的打包方式。</p>
+<h4 id="1-基本配置"><a href="#1-基本配置" class="headerlink" title="1. 基本配置"></a>1. 基本配置</h4><p>想要将项目改造成多页面项目，我们可以自定义底层的 Rollup 打包配置，只需要指定多个 .html 文件作为入口点即可，此设置在<font bgcolor='green'> build.rollupOptions.input </font>配置项下。</p>
+<p>首先我们现在 projects 文件夹下新建两个子页面 page1、page2 ，目录结构如下：</p>
+<img src="/2024/01/23/vite-multi-project/code1.jpg" srcset="/img/loading.gif" lazyload class="" title="This is an example image">
+
+<p>然后在<font bgcolor='green'> vite.config.ts </font>文件中指定这两个子页面的入口。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">build: &#123;<br>rollupOptions: &#123;  //自定义底层的 Rollup 打包配置<br>  input: &#123;<br>    project1: resolve(__dirname, <span class="hljs-string">&#x27;src/projects/page1/index.html&#x27;</span>),<br>    project2: resolve(__dirname, <span class="hljs-string">&#x27;src/projects/page2/index.html&#x27;</span>)<br>  &#125;<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里需要注意的是：<br><font bgcolor='green'> __dirname </font>占位符指的是<font bgcolor='green'> vite.config.js </font>文件所在的目录，即使修改了项目的根目录，它的值也不会变（后面我们将会修改项目的根目录）。</p>
+<h4 id="2-动态生成多页面入口"><a href="#2-动态生成多页面入口" class="headerlink" title="2. 动态生成多页面入口"></a>2. 动态生成多页面入口</h4><p>因为我们要不断新建子页面，不可能每个子页面都手动去配置入口，所以可以获取到<font bgcolor='green'> &#x2F;projects </font>文件夹下文件名后，动态配置多页面入口。</p>
+<p>fs 模块是 Node.js 官方提供的、用来操作文件的模块。它提供了一系列的方法和属性，用来满足用户对文件的操作需求，这里我们用到了<font bgcolor='green'> fs.readdirSync </font>方法。<br><font bgcolor='green'> fs.readdirSync </font>方法同步返回一个包含“指定目录下所有文件的名称”的数组对象。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> fs <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;fs&quot;</span>;<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">getEntryPath</span> () &#123;<br>    <span class="hljs-keyword">const</span> map = &#123;&#125; <span class="hljs-comment">//最后生成的多页面配置项</span><br>    <span class="hljs-keyword">const</span> <span class="hljs-variable constant_">PAGE_PATH</span> = path.<span class="hljs-title function_">resolve</span>(\__dirname, <span class="hljs-string">&#x27;./src/Project&#x27;</span>)  <span class="hljs-comment">//指定要查询的目录</span><br>    <span class="hljs-keyword">const</span> entryFiles = fs.<span class="hljs-title function_">readdirSync</span>(<span class="hljs-variable constant_">PAGE_PATH</span>)   <span class="hljs-comment">//获取到指定目录下的所有文件名</span><br>    entryFiles.<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">filePath</span> =&gt;</span> &#123;   <span class="hljs-comment">//遍历处理每个子页面的入口</span><br>        map[filePath] = path.<span class="hljs-title function_">resolve</span>(__dirname,<br>        <span class="hljs-string">`src/Project/<span class="hljs-subst">$&#123;filePath&#125;</span>/index.html`</span><br>        )<br>    &#125;)<br>      <span class="hljs-keyword">return</span> map<br>&#125;<br><br><span class="hljs-comment">// 自定义底层的 Rollup 打包配置</span><br><span class="hljs-attr">rollupOptions</span>: &#123;<br>  <span class="hljs-attr">input</span>: <span class="hljs-title function_">getEntryPath</span>()<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-配置重定向页面"><a href="#3-配置重定向页面" class="headerlink" title="3. 配置重定向页面"></a>3. 配置重定向页面</h4><p>配置完多页面入口后，我们可以启动项目看看效果。<font bgcolor='green'> npm run dev </font>启动项目：</p>
+<p>你会发现什么都没有，因为此时项目根路径还是‘&#x2F;’，找不到可以作为入口的index.html文件，这时我们只能手动拼接上地址<font bgcolor='green'> &#x2F;src&#x2F;projects&#x2F;page1&#x2F; </font>，进入子项目的<font bgcolor='green'> index.html </font>文件</p>
+<p>修改项目根目录下的<font bgcolor='green'> index.html(与vite.config.js同级) </font>。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;en&quot;</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">&quot;UTF-8&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>重定向<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;./src/projects/page1/index.html&quot;</span>&gt;</span>子页面1<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;./src/projects/page2/index.html&quot;</span>&gt;</span>子页面2<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="七、-多页面打包配置"><a href="#七、-多页面打包配置" class="headerlink" title="七、 多页面打包配置"></a>七、 多页面打包配置</h3><p>build 选项指定多个入口之后，就可以进行多页面打包了。我们执行<font bgcolor='green'> npm run build </font>看看打包生成的<font bgcolor='green'> dist </font>文件夹结构（这是完成版的截图，初步配置打包不区分 js&#x2F;css&#x2F;png等文件夹）。</p>
+<img src="/2024/01/23/vite-multi-project/code2.jpg" srcset="/img/loading.gif" lazyload class="" title="This is an example image">
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-attr">build</span>: &#123;<br>  <span class="hljs-attr">rollupOptions</span>: &#123;<br>    <span class="hljs-attr">input</span>: 指定多页面入口,<br>    <span class="hljs-attr">output</span>: &#123;<br>      <span class="hljs-attr">assetFileNames</span>: <span class="hljs-string">&#x27;[ext]/[name]-[hash].[ext]&#x27;</span>, <span class="hljs-comment">//静态文件输出的文件夹名称</span><br>      <span class="hljs-attr">chunkFileNames</span>: <span class="hljs-string">&#x27;js/[name]-[hash].js&#x27;</span>,  <span class="hljs-comment">//chunk包输出的文件夹名称</span><br>      <span class="hljs-attr">entryFileNames</span>: <span class="hljs-string">&#x27;js/[name]-[hash].js&#x27;</span>,  <span class="hljs-comment">//入口文件输出的文件夹名称</span><br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>占位符说明 &gt;&gt;&gt;</p>
+<p><font bgcolor='green'> [extname] </font>：文件扩展名，包括前面的<font bgcolor='green'> . ,例如 .css </font>；<br><font bgcolor='green'> [ext] </font>：文件扩展名，不包括前面的<font bgcolor='green'> . ,例如 css </font>；<br><font bgcolor='green'> [name] </font>：文件名；<br><font bgcolor='green'> [hash] </font>：基于文件内容生成的哈希值，可以通过<font bgcolor='green'> [hash:10] </font>设置特定的哈希长度；</p>
+<h3 id="八、-指令化新建子页面（-重点来了～-）"><a href="#八、-指令化新建子页面（-重点来了～-）" class="headerlink" title="八、 指令化新建子页面（ 重点来了～ ）"></a>八、 指令化新建子页面（<font bgcolor='pink'> 重点来了～ </font>）</h3><p>到这里其实已经改造出来了一个多页面项目脚手架。但是离我们都目标还相差甚远：</p>
+<ul>
+<li>🍀 不能指令化创建页面</li>
+<li>🍀 不能单独启动指定的子项目</li>
+<li>🍀 打包后所有子项目的静态文件都混淆在一起</li>
+</ul>
+<p>那么怎么解决这些问题呢？ 我们逐个剖析：</p>
+<p>先来解决指令化新建页面的问题，既然要创建页面，就是要和文件打交道，所以我们还是要使用到 fs 文件系统模块。先来了解它的一下几个方法，我们之后会用到（这里只是大概对方法简单说明，具体使用自行查询）：</p>
+<p>🔥 <font bgcolor='green'> fs.mkdirSync( path, options ) </font>方法用于同步创建目录，创建子页面主要就是使用这个方法。</p>
+<p>🔥 <font bgcolor='green'> fs.readFile( filename, encoding, callback_function ) </font>方法用于异步读取指定文件中的内容。</p>
+<p>🔥 <font bgcolor='green'> fs.writeFile( file, data, options, callback ) </font>方法用于异步读取指定文件中的内容。</p>
+<p>🔥 <font bgcolor='green'> fs.existsSync( path ) </font>方法用于同步检测目录是否存在;</p>
+<p>🔥 <font bgcolor='green'> fs.readdirSync( path, options ) </font>方法用于同步读取给定目录的内容。该方法返回一个数组，其中包含目录中的所有文件名或对象。</p>
+<p>🔥 <font bgcolor='green'> fs.copyFileSync( src, dest, mode ) </font>方法用于将文件从源路径同步复制到目标路径。</p>
+<ol>
+<li><font bgcolor='green'> package.json </font>文件中添加以下指令，以执行创建子页面的脚本；</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&quot;scripts&quot;</span>: &#123;<br>    ...<br>    <span class="hljs-string">&quot;new:page&quot;</span>: <span class="hljs-string">&quot;node ./scripts/index.mjs&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>然后开发写创建子页面的脚本，第一步要先提示用户输入要创建的页面名称和描述，并验证输入的格式；</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//./scripts/index.mjs</span><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">log</span> = (<span class="hljs-params">message</span>) =&gt; <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(chalk.<span class="hljs-title function_">green</span>(<span class="hljs-string">`<span class="hljs-subst">$&#123;message&#125;</span>`</span>))<br><span class="hljs-keyword">const</span> <span class="hljs-title function_">successLog</span> = (<span class="hljs-params">message</span>) =&gt; <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(chalk.<span class="hljs-title function_">blue</span>(<span class="hljs-string">`<span class="hljs-subst">$&#123;message&#125;</span>`</span>))<br><span class="hljs-keyword">const</span> <span class="hljs-title function_">errorLog</span> = (<span class="hljs-params">error</span>) =&gt; <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(chalk.<span class="hljs-title function_">red</span>(<span class="hljs-string">`<span class="hljs-subst">$&#123;error&#125;</span>`</span>))<br><span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;请输入要生成的&quot;页面名称:页面描述&quot;、会生成在 /src/projects 目录下&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>使用<font bgcolor='green'> fs.existsSync </font>方法验证是否已存在同名页面；</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//process.stdin属性是流程模块的内置应用程序编程接口，用于侦听用户输入，它使用on()函数来监听事件。</span><br>process.<span class="hljs-property">stdin</span>.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;data&#x27;</span>, <span class="hljs-keyword">async</span> (chunk) =&gt; &#123;<br><span class="hljs-comment">// 获取输入的信息</span><br><span class="hljs-keyword">const</span> content = <span class="hljs-title class_">String</span>(chunk).<span class="hljs-title function_">trim</span>().<span class="hljs-title function_">toString</span>()<br><span class="hljs-keyword">const</span> inputSearch = content.<span class="hljs-title function_">search</span>(<span class="hljs-string">&#x27;:&#x27;</span>)<br><span class="hljs-keyword">if</span> (inputSearch == -<span class="hljs-number">1</span>) &#123;<br>    <span class="hljs-title function_">errorLog</span>(<span class="hljs-string">&#x27;格式错误，请重新输入&#x27;</span>)<br>    <span class="hljs-keyword">return</span><br>&#125;<br><span class="hljs-comment">// 拆分用户输入的名称和描述</span><br><span class="hljs-keyword">const</span> inputName = content.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;:&#x27;</span>)[<span class="hljs-number">0</span>]<br><span class="hljs-keyword">const</span> inputDesc = content.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;:&#x27;</span>)[<span class="hljs-number">1</span>] || inputName<br><span class="hljs-keyword">const</span> isTs = process.<span class="hljs-property">env</span>.<span class="hljs-property">npm_config_ts</span><br><span class="hljs-title function_">successLog</span>(<span class="hljs-string">`将在 /src/Project 目录下创建 <span class="hljs-subst">$&#123;inputName&#125;</span> 文件夹`</span>)<br><span class="hljs-keyword">const</span> targetPath = <span class="hljs-title function_">resolve</span>(<span class="hljs-string">&#x27;./src/Project&#x27;</span>, inputName)<br><span class="hljs-comment">// 判断同名文件夹是否存在</span><br><span class="hljs-keyword">const</span> pageExists = fs.<span class="hljs-title function_">existsSync</span>(targetPath)<br><span class="hljs-keyword">if</span> (pageExists) &#123;<br>    <span class="hljs-title function_">errorLog</span>(<span class="hljs-string">&#x27;页面已经存在，请重新输入&#x27;</span>)<br>    <span class="hljs-keyword">return</span><br>&#125;<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>在同级<font bgcolor='green'> script </font>文件夹下，新建<font bgcolor='green'> multiPages.json </font>用于记录目前已有的页面名称，每次新建页面都会写入进去；</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 获取multiPages.json文件内容，获取当前已有的页面集合</span><br><span class="hljs-keyword">await</span> fs.<span class="hljs-title function_">readFile</span>(<br>path.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">&#x27;./scripts&#x27;</span>, <span class="hljs-string">&#x27;multiPages.json&#x27;</span>),<br><span class="hljs-string">&#x27;utf-8&#x27;</span>,<br><span class="hljs-function">(<span class="hljs-params">err, data</span>) =&gt;</span> &#123;<br>  <span class="hljs-comment">//获取老数据</span><br>  <span class="hljs-keyword">let</span> datas = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(data)<br>  <span class="hljs-comment">//和老数据去重</span><br>  <span class="hljs-keyword">let</span> index = datas.<span class="hljs-title function_">findIndex</span>(<span class="hljs-function">(<span class="hljs-params">ele</span>) =&gt;</span> &#123;<br>    <span class="hljs-keyword">return</span> ele.<span class="hljs-property">chunk</span> == inputName<br>  &#125;)<br>  <span class="hljs-keyword">if</span> (index == -<span class="hljs-number">1</span>) &#123;<br>    <span class="hljs-comment">//写入新页面的</span><br>    <span class="hljs-keyword">let</span> obj = &#123;<br>      <span class="hljs-attr">chunk</span>: inputName,<br>      <span class="hljs-attr">chunkName</span>: inputDesc<br>    &#125;<br>    datas.<span class="hljs-title function_">push</span>(obj)<br>    <span class="hljs-title function_">setFile</span>(datas)<br>  &#125;<br>&#125;)<br><br><span class="hljs-comment">// 写入multiPages.json</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">setFile</span>(<span class="hljs-params">datas</span>) &#123;<br><span class="hljs-comment">// 通过writeFile改变数据内容</span><br>fs.<span class="hljs-title function_">writeFile</span>(<br>  path.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">&#x27;./scripts&#x27;</span>, <span class="hljs-string">&#x27;multiPages.json&#x27;</span>),<br>  <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(datas),<br>  <span class="hljs-string">&#x27;utf-8&#x27;</span>,<br>  <span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> &#123;<br>    <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">throw</span> err<br>    <span class="hljs-comment">// 在project中建立新的目录</span><br>    fs.<span class="hljs-title function_">mkdirSync</span>(targetPath)<br>    <span class="hljs-keyword">const</span> sourcePath = <span class="hljs-title function_">resolve</span>(<br>      isTs ? <span class="hljs-string">&#x27;./scripts/template-ts&#x27;</span> : <span class="hljs-string">&#x27;./scripts/template&#x27;</span><br>    )<br>    <span class="hljs-title function_">copyFile</span>(sourcePath, targetPath)<br>    process.<span class="hljs-property">stdin</span>.<span class="hljs-title function_">emit</span>(<span class="hljs-string">&#x27;end&#x27;</span>)<br>  &#125;<br>)<br>&#125;<br><br>...<br><br>process.<span class="hljs-property">stdin</span>.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;end&#x27;</span>, <span class="hljs-function">() =&gt;</span> &#123;<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;exit&#x27;</span>)<br>process.<span class="hljs-title function_">exit</span>()<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>将新页面的信息写入<font bgcolor='green'> multiPages.json </font>文件后，在<font bgcolor='green'> projects </font>文件夹下复制我们提前创建好的模板页面。我这里创建了两个模版页面，分别是js和ts的模版，如果需要创建支持<font bgcolor='green'> TS </font>的子页面，创建命令为<font bgcolor='green'> npm run new:page –ts </font></li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 判断文件夹是否存在，不存在创建一个</span><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">isExist</span> = (<span class="hljs-params">path</span>) =&gt; &#123;<br>    <span class="hljs-keyword">if</span> (!fs.<span class="hljs-title function_">existsSync</span>(path)) &#123;<br>        fs.<span class="hljs-title function_">mkdirSync</span>(path)<br>    &#125;<br>&#125;<br><span class="hljs-comment">//递归复制模版文件夹内的文件</span><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">copyFile</span> = (<span class="hljs-params">sourcePath, targetPath</span>) =&gt; &#123;<br><span class="hljs-keyword">const</span> sourceFile = fs.<span class="hljs-title function_">readdirSync</span>(sourcePath, &#123; <span class="hljs-attr">withFileTypes</span>: <span class="hljs-literal">true</span> &#125;)<br><br>sourceFile.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">file</span>) =&gt;</span> &#123;<br>    <span class="hljs-keyword">const</span> newSourcePath = path.<span class="hljs-title function_">resolve</span>(sourcePath, file.<span class="hljs-property">name</span>)<br>    <span class="hljs-keyword">const</span> newTargetPath = path.<span class="hljs-title function_">resolve</span>(targetPath, file.<span class="hljs-property">name</span>)<br>    <span class="hljs-comment">//isDirectory() 判断这个文件是否是文件夹，是就继续递归复制其内容</span><br>        <span class="hljs-keyword">if</span> (file.<span class="hljs-title function_">isDirectory</span>()) &#123;<br>          <span class="hljs-title function_">isExist</span>(newTargetPath)<br>          <span class="hljs-title function_">copyFile</span>(newSourcePath, newTargetPath)<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>          fs.<span class="hljs-title function_">copyFileSync</span>(newSourcePath, newTargetPath)<br>        &#125;<br>    &#125;)<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="九、-多页面架构改造"><a href="#九、-多页面架构改造" class="headerlink" title="九、 多页面架构改造"></a>九、 多页面架构改造</h3><p>指定子页面可以在执行<font bgcolor='green'> npm run dev </font>命令时配置自定义环境变量。格式为<font bgcolor='green'> npm run dev –变量名&#x3D;值 </font>，例如我要单独启动 pageone 子页面：<font bgcolor='green'> npm run dev –page&#x3D;page1 </font>。关于<a target="_blank" rel="noopener" href="https://www.w3cschool.cn/npmjs/npmjs-tfry3kmu.html">npm</a>环境变量的使用可以查看<a target="_blank" rel="noopener" href="https://www.w3cschool.cn/npmjs/npmjs-tfry3kmu.html">传送门</a><br>如何启动后直接进入这个子页面呢？这时候我们就需要修改项目的根路径了：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs">注意：将根路径修改到指定子页面目录下后，就只能单独启动/打包 指定的子页面了，无法打包全部的子页面。这么做有以下优缺点：<br>优点：打包后的子页面相互独立，可以直接启动指定的子页面；<br>缺点：无法一次性打包全部页面，需要配置重定向页面方便调试<br></code></pre></td></tr></table></figure>
+
+<p>所以你可以根据需要决定是否要修改项目根目录，因为我考虑到页面是逐步新增的，需要一次性打包全部页面的情况很少，而且我认为打包后的子页面相互独立非常重要，避免出现一些意料之外的问题影响多个页面，所以我果断选择了每次都单独打包页面。</p>
+<p>这里我把两种情况的处理都列出来：</p>
+<h4 id="情况1：支持单页面打包和打包全部页面"><a href="#情况1：支持单页面打包和打包全部页面" class="headerlink" title="情况1：支持单页面打包和打包全部页面"></a>情况1：支持单页面打包和打包全部页面</h4><p>处理方式：</p>
+<ol>
+<li>多页面入口配置<br>使用说明：<font bgcolor='green'> npm run build </font>打包全部页面; <font bgcolor='green'> npm run build –page&#x3D;页面名称 </font>打包单页面；</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">//vite.config.ts</span><br><br><span class="hljs-comment">// 引入多页面配置文件</span><br><span class="hljs-keyword">const</span> project = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./scripts/multiPages.json&#x27;</span>)<br><span class="hljs-comment">// 获取npm run dev后缀 配置的环境变量</span><br><span class="hljs-keyword">const</span> <span class="hljs-attr">npm_config_page</span>:string =  process.<span class="hljs-property">env</span>.<span class="hljs-property">npm_config_page</span> || <span class="hljs-string">&#x27;&#x27;</span><br><br><span class="hljs-keyword">let</span> filterProjects = []<br><span class="hljs-keyword">if</span> (npm_config_page) &#123;<br>	<span class="hljs-comment">//如果指定了单页面打包，过滤出这个页面的配置项</span><br>	filterProjects = project.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">ele</span>) =&gt;</span> &#123;<br>	  <span class="hljs-keyword">return</span> ele.<span class="hljs-property">chunk</span>.<span class="hljs-title function_">toLowerCase</span>() === npm_config_page.<span class="hljs-title function_">toLowerCase</span>()<br>	&#125;)<br>	<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`--------单独构建：<span class="hljs-subst">$&#123;filterProjects[<span class="hljs-number">0</span>][<span class="hljs-string">&#x27;chunkName&#x27;</span>]&#125;</span>--------`</span>)<br>	&#125; <span class="hljs-keyword">else</span> &#123;<br>	filterProjects = project<br>&#125;<br><br><span class="hljs-comment">//多页面入口</span><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">getEnterPages</span> = (<span class="hljs-params">p</span>) =&gt; &#123;<br>	<span class="hljs-keyword">const</span> pages = &#123;&#125;<br>	p.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">ele</span>) =&gt;</span> &#123;<br>	<span class="hljs-keyword">const</span> htmlUrl = path.<span class="hljs-title function_">resolve</span>(<br>	  __dirname,<br>	  <span class="hljs-string">`src/projects/<span class="hljs-subst">$&#123;ele.chunk&#125;</span>/index.html`</span><br>	)<br>	pages[ele.<span class="hljs-property">chunk</span>] = htmlUrl<br>	&#125;)<br>	<span class="hljs-keyword">return</span> pages<br>&#125;<br><br><span class="hljs-comment">//入口配置</span><br><span class="hljs-attr">build</span>: &#123;<br><span class="hljs-attr">rollupOptions</span>: &#123;<br>  <span class="hljs-attr">input</span>: <span class="hljs-title function_">getEnterPages</span>(filterProjects),<br>  ...<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>项目根路径修改为<font bgcolor='green'> root: ‘.&#x2F;src&#x2F;projects&#x2F;‘ </font>，不修改其实也能实现，但是不改的话打包后dist文件夹层级太深；</p>
+</li>
+<li><p>修改打包的输出路径为:</p>
+</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-attr">build</span>: &#123;<br>  <span class="hljs-attr">outDir</span>: path.<span class="hljs-title function_">resolve</span>(__dirname, <span class="hljs-string">`dist`</span>), <span class="hljs-comment">// 指定输出路径</span><br>...<br></code></pre></td></tr></table></figure>
+<img src="/2024/01/23/vite-multi-project/code2.jpg" srcset="/img/loading.gif" lazyload class="" title="This is an example image">
+
+<ol start="4">
+<li>修改 <code>envDir</code> 配置项，修改到项目根的路径，用于加载<code>.env</code> 环境变量文件</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-attr">envDir</span>: path.<span class="hljs-title function_">resolve</span>(__dirname)<br></code></pre></td></tr></table></figure>
+
+<h4 id="情况2：只支持单页面打包"><a href="#情况2：只支持单页面打包" class="headerlink" title="情况2：只支持单页面打包"></a>情况2：只支持单页面打包</h4><ol>
+<li>多页面入口配置</li>
+</ol>
+<p>使用说明： npm run build –page&#x3D;页面名称 单独打包指定页面。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">//vite.config.ts</span><br><span class="hljs-keyword">import</span> chalk <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;chalk&#x27;</span><br><br><span class="hljs-comment">// 引入多页面配置文件</span><br><span class="hljs-keyword">const</span> project = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./scripts/multiPages.json&#x27;</span>)<br><span class="hljs-comment">// 获取npm run dev后缀 配置的环境变量</span><br><span class="hljs-keyword">const</span> <span class="hljs-attr">npm_config_page</span>:string =  process.<span class="hljs-property">env</span>.<span class="hljs-property">npm_config_page</span> || <span class="hljs-string">&#x27;&#x27;</span><br><span class="hljs-comment">// 命令行报错提示</span><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">errorLog</span> = (<span class="hljs-params">error</span>) =&gt; <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(chalk.<span class="hljs-title function_">red</span>(<span class="hljs-string">`<span class="hljs-subst">$&#123;error&#125;</span>`</span>))<br><br><span class="hljs-comment">//获取指定的单页面入口</span><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">getEnterPages</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>    <span class="hljs-keyword">if</span> (!npm_config_page) <span class="hljs-title function_">errorLog</span>(<span class="hljs-string">&#x27;-------------------请在命令行后以 `--page=页面名称` 格式指定页面名称！-------------------&#x27;</span>)<br>    <span class="hljs-keyword">const</span> filterArr = project.<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> item.<span class="hljs-property">chunk</span>.<span class="hljs-title function_">toLowerCase</span>() == npm_config_page.<span class="hljs-title function_">toLowerCase</span>())<br>    <span class="hljs-keyword">if</span> (!filterArr.<span class="hljs-property">length</span>)<br>    <span class="hljs-title function_">errorLog</span>(<span class="hljs-string">&#x27;-------------------不存在此页面，请检查页面名称！-------------------&#x27;</span>)<br>    <br>    <span class="hljs-keyword">return</span> &#123;<br>        [npm_config_page] : path.<span class="hljs-title function_">resolve</span>(<br>          __dirname,<br>          <span class="hljs-string">`src/Project/<span class="hljs-subst">$&#123;npm_config_page&#125;</span>/index.html`</span><br>        )<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">//入口配置</span><br><span class="hljs-attr">build</span>: &#123;<br>    <span class="hljs-attr">rollupOptions</span>: &#123;<br>      <span class="hljs-attr">input</span>: <span class="hljs-title function_">getEnterPages</span>(),<br>      ...<br><br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>项目根路径修改到用户输入的单页面文件夹下</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-attr">root</span>: path.<span class="hljs-title function_">resolve</span>(__dirname, <span class="hljs-string">`./src/Project/<span class="hljs-subst">$&#123;npm_config_page&#125;</span>`</span>)<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>修改打包的输出路径为：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-attr">build</span>: &#123;<br>  <span class="hljs-attr">outDir</span>: path.<span class="hljs-title function_">resolve</span>(__dirname, <span class="hljs-string">`dist/<span class="hljs-subst">$&#123; npm_config_page &#125;</span>`</span>) <span class="hljs-comment">// 指定输出路径</span><br>...<br></code></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>修改<font bgcolor='green'> envDir </font>配置项，修改到项目根的路径，用于加载.env 环境变量文件</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-attr">envDir</span>: path.<span class="hljs-title function_">resolve</span>(__dirname)<br></code></pre></td></tr></table></figure>
+
+<p>到这里，多页面架构已经基本改造完成了🎉🎉🎉</p>
+<p>再做一些打包的优化：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-attr">build</span>: &#123;<br>    <span class="hljs-attr">assetsInlineLimit</span>: <span class="hljs-number">4096</span>, <span class="hljs-comment">//小于此阈值的导入或引用资源将内联为 base64 编码，以避免额外的 http 请求</span><br>    <span class="hljs-attr">emptyOutDir</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">//Vite 会在构建时清空该目录</span><br>    <span class="hljs-attr">terserOptions</span>: &#123;<br>      <span class="hljs-attr">compress</span>: &#123;<br>        <span class="hljs-attr">keep_infinity</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">// 防止 Infinity 被压缩成 1/0，这可能会导致 Chrome 上的性能问题</span><br>        <span class="hljs-attr">drop_console</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">// 生产环境去除 console</span><br>        <span class="hljs-attr">drop_debugger</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">// 生产环境去除 debugger</span><br>      &#125;,<br>      <span class="hljs-attr">format</span>: &#123;<br>        <span class="hljs-attr">comments</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">// 删除注释</span><br>      &#125;,<br>    &#125;,<br>    <span class="hljs-attr">rollupOptions</span>: &#123;<br>      <span class="hljs-attr">input</span>: ...<br>      <span class="hljs-attr">output</span>: &#123;<br>        ...<br>        <span class="hljs-attr">compact</span>: <span class="hljs-literal">true</span>,  <span class="hljs-comment">//压缩代码，删除换行符等</span><br>        <span class="hljs-attr">manualChunks</span>: <span class="hljs-function">(<span class="hljs-params">id: string</span>) =&gt;</span> &#123;  <span class="hljs-comment">//配置分包</span><br>          <span class="hljs-keyword">if</span>(id.<span class="hljs-title function_">includes</span>(<span class="hljs-string">&quot;node_modules&quot;</span>)) &#123;<br>            <span class="hljs-keyword">return</span> id.<span class="hljs-title function_">toString</span>().<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;node_modules/&#x27;</span>)[<span class="hljs-number">1</span>].<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;/&#x27;</span>)[<span class="hljs-number">0</span>].<span class="hljs-title function_">toString</span>(); <span class="hljs-comment">// 拆分多个vendors</span><br>          &#125;<br>        &#125;<br>      &#125;<br>    &#125;<br>...<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="十、-完善项目架构"><a href="#十、-完善项目架构" class="headerlink" title="十、 完善项目架构"></a>十、 完善项目架构</h3><ol>
+<li>增加 eslint</li>
+<li>增加 prettier</li>
+<li>增加git提交 husky + lint-staged + Commitlint 的校验</li>
+<li>配置环境变量</li>
+<li>引入 element-plus UI库并配置自动引入等</li>
+</ol>
+<p>这些就不赘述了，不清楚的可以直接去我项目里拉代码</p>
+<p>⏰ 写在最后</p>
+<p>在搭建的过程中，一定要注意因为修改了项目根目录（root）所带来的问题，利用 path.resolve(__dirname, …) 将路径重置到相对于项目根的位置！</p>
+<p>关于如何使用这个多页面脚手架，可以看 README.md 文件。</p>
+<p>项目源代码放在这了 <a target="_blank" rel="noopener" href="https://github.com/shber/vite-multi-project">github源码</a>，对你有帮助请给个🌟，感谢🙏</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>vue3+vite5 构建多页面多项目开发及打包</div>
+      <div>http://example.com/2024/01/23/vite-multi-project/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Shber</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年1月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/01/23/front-subject/" title="前端面试题从简到繁，从点到面，一起查缺补漏吧！+ 注解">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">前端面试题从简到繁，从点到面，一起查缺补漏吧！+ 注解</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"QRfU5pSE2oF5IN1VUwEKCk9E-gzGzoHsz","appKey":"diqFnvO5N33sOiVsrFwKBKyX","path":"window.location.pathname","placeholder":"说点什么...","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
